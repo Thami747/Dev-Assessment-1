@@ -23,12 +23,18 @@ public class AddressProject {
     public static void main(String[] args) {
         try {
             Address addressOne = new Address();
-            addressOne.setId("1");
+            addressOne.setId("3");
             addressOne.setType(new Type());
             addressOne.getType().setName("Business Address");
-//            prettyPrintAddress(addressOne);
-//            prettyPrintAllAddress();
+            
+            System.out.println("------------------------------PRETTY PRINT ADDRESS----------------------------------------------");
+            prettyPrintAddress(addressOne);
+            System.out.println("------------------------------PRETTY PRINT ALL ADDRESSES----------------------------------------------");
+            prettyPrintAllAddress();
+            System.out.println("------------------------------PRINT ADDRESS BY TYPE----------------------------------------------");
             printAddressByType(addressOne);
+            System.out.println("------------------------------VALIDATE THE ADDRESS----------------------------------------------");
+            isValidAddress(addressOne);
 
         } catch (IOException ex) {
             Logger.getLogger(AddressProject.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,17 +113,44 @@ public class AddressProject {
         return prettyPrintMessage;
     }
     
-    private boolean isValidAddress(Address address) {
+    public static String isValidAddress(Address address) throws IOException {
         List<Address> addressList = AddressObjectMapper.getAddressesFromJson();
-        boolean isAddressValid = false;
+        String responseMessage = "";
         for (Address newAddress : addressList) {
             if (newAddress.getId().equals(address.getId())) {
-                if (newAddress.getPostalCode() != null) {
-                    isAddressValid = isNumeric(address.getPostalCode());
+                if (newAddress.getPostalCode() != null && isNumeric(newAddress.getPostalCode())) {
+                    responseMessage = "Success validated postal code.\n";
+                } else {
+                    responseMessage = "Postal code is null or is not numeric.";
+                    break;
+                }
+               
+                if (newAddress.getCountry() != null) {
+                    responseMessage = responseMessage.concat("Succefully found country.\n");
+                    
+                    if (newAddress.getCountry().getCode().equalsIgnoreCase("ZA")) {
+                        if (newAddress.getProvinceOrState() != null) {
+                            responseMessage = responseMessage.concat("Successfully found the province: " + newAddress.getProvinceOrState().getName() + "\n");
+                        } else {
+                            responseMessage = "The country ZA requires a province or state but found null";
+                            break;
+                        }
+                    }
+                } else {
+                    responseMessage = "Country is null.";
+                    break;
+                }
+                
+                if (newAddress.getAddressLineDetail() != null && !newAddress.getAddressLineDetail().getLine1().equals("")) {
+                    responseMessage = responseMessage.concat("Successfully validated addressLine.");
+                } else {
+                    responseMessage = "No Addressline found for this address.";
+                    break;
                 }
             }
         }
-        return isAddressValid;
+        System.out.println(responseMessage);
+        return responseMessage;
     }
     
     private static boolean isNumeric (String s) {
