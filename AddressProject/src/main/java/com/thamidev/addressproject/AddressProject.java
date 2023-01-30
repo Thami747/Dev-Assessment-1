@@ -23,9 +23,9 @@ public class AddressProject {
     public static void main(String[] args) {
         try {
             Address addressOne = new Address();
-            addressOne.setId("3");
+            addressOne.setId("1");
             addressOne.setType(new Type());
-            addressOne.getType().setName("Business Address");
+            addressOne.getType().setName("Postal Address");
             
             System.out.println("------------------------------PRETTY PRINT ADDRESS----------------------------------------------");
             prettyPrintAddress(addressOne);
@@ -119,14 +119,14 @@ public class AddressProject {
         for (Address newAddress : addressList) {
             if (newAddress.getId().equals(address.getId())) {
                 if (newAddress.getPostalCode() != null && isNumeric(newAddress.getPostalCode())) {
-                    responseMessage = "Success validated postal code.\n";
+                    responseMessage = "Successfully validated postal code.\n";
                 } else {
                     responseMessage = "Postal code is null or is not numeric.";
                     break;
                 }
                
                 if (newAddress.getCountry() != null) {
-                    responseMessage = responseMessage.concat("Succefully found country.\n");
+                    responseMessage = responseMessage.concat("Successfully found country.\n");
                     
                     if (newAddress.getCountry().getCode().equalsIgnoreCase("ZA")) {
                         if (newAddress.getProvinceOrState() != null) {
